@@ -26,7 +26,6 @@ const runtime = new CopilotRuntime({
 export const POST = async (req: NextRequest) => {
     // Extract the user's API key from the request headers
     const openaiApiKey = req.headers.get("x-openai-api-key");
-    console.log("\n ------- OPEN AI KEY",openaiApiKey);
     
     // Create model with the API key from headers
     const model = new ChatOpenAI({
