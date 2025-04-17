@@ -7,9 +7,10 @@ import { MCPConfigForm } from './MCPConfigForm';
 interface RightSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onApiKeySaved: () => void;
 }
 
-export function RightSidebar({ isOpen, onClose }: RightSidebarProps) {
+export function RightSidebar({ isOpen, onClose, onApiKeySaved }: RightSidebarProps) {
   // const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -52,6 +53,7 @@ export function RightSidebar({ isOpen, onClose }: RightSidebarProps) {
           <MCPConfigForm 
             // showSpreadsheet={showSpreadsheet} 
             // setShowSpreadsheet={setShowSpreadsheet} 
+            onApiKeySaved={onApiKeySaved}
           />
           {/* {showSpreadsheet && <SpreadsheetRenderer />} */}
         </div>
