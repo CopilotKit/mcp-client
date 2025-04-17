@@ -27,6 +27,11 @@ export default function Home() {
   // const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const chatRef = useRef<{ handleNewChat: () => void; handleSidebarToggle: () => void }>(null);
 
+  // Function to hide the notification banner
+  const handleApiKeySaved = () => {
+    setShowApiKeyNotification(false);
+  };
+
   useEffect(() => {
     // Check for API key cookie on mount
     const apiKey = getCookie('openai-api-key');
@@ -134,7 +139,11 @@ export default function Home() {
       </div>
 
       {/* Right Sidebar for Settings/Data */}
-      <RightSidebar isOpen={isRightSidebarOpen} onClose={() => setIsRightSidebarOpen(false)} />
+      <RightSidebar 
+        isOpen={isRightSidebarOpen} 
+        onClose={() => setIsRightSidebarOpen(false)} 
+        onApiKeySaved={handleApiKeySaved}
+      />
     </div>
   );
 }
