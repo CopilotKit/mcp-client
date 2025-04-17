@@ -31,6 +31,8 @@ interface ChatSession {
 
 interface CustomChatProps {
   onSettingsClick?: () => void;
+  isSidebarOpen: boolean;
+  onSidebarToggle: () => void;
 }
 
 // Helper function to get time-based greeting
@@ -81,7 +83,7 @@ const getTimeBasedGreeting = (): string => {
 };
 
 export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarToggle: () => void }, CustomChatProps>((props, ref) => {
-  const { onSettingsClick } = props;
+  const { onSettingsClick, isSidebarOpen, onSidebarToggle } = props;
   const { visibleMessages, appendMessage, isLoading, stopGeneration, setMessages } = useCopilotChat();
   const { setThreadId } = useCopilotContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -91,7 +93,6 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   // Chat history state
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Add state for dropdown menu and rename functionality
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
@@ -258,13 +259,9 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     }, 50);
   };
 
-  const handleSidebarToggle = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   useImperativeHandle(ref, () => ({
     handleNewChat,
-    handleSidebarToggle
+    handleSidebarToggle: onSidebarToggle
   }));
 
   const loadChat = (chatId: string) => {
@@ -429,7 +426,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
           ))}
         </div>
         <button
-          onClick={handleSidebarToggle}
+          onClick={onSidebarToggle}
           className="absolute top-4 left-4 text-gray-500 hover:text-gray-800"
         >
           {isSidebarOpen ? <PanelLeftDashed size={20} /> : <PanelLeft size={20} />}
@@ -442,7 +439,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
         <div className="fixed top-0 left-0 right-0 bg-[#faf9f5] p-4 flex justify-between items-center z-10">
           {!isSidebarOpen && (
             <button
-              onClick={handleSidebarToggle}
+              onClick={onSidebarToggle}
               className="text-gray-500 hover:text-gray-800"
             >
               <PanelLeft size={20} />
