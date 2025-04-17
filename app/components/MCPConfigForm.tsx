@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCoAgent } from "@copilotkit/react-core";
-import { ExampleConfigs } from "./ExampleConfigs";
+// import { ExampleConfigs } from "./ExampleConfigs";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Trash2, Save } from "lucide-react";
 
@@ -47,7 +47,7 @@ const ExternalLink = () => (
   </svg>
 );
 
-export function MCPConfigForm({ showSpreadsheet, setShowSpreadsheet }: { showSpreadsheet: boolean, setShowSpreadsheet: (value: boolean) => void }) {
+export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { showSpreadsheet: boolean, setShowSpreadsheet: (value: boolean) => void } */) {
   // Use our localStorage hook for persistent storage
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
@@ -105,7 +105,7 @@ export function MCPConfigForm({ showSpreadsheet, setShowSpreadsheet }: { showSpr
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showAddServerForm, setShowAddServerForm] = useState(false);
-  const [showExampleConfigs, setShowExampleConfigs] = useState(false);
+  // const [showExampleConfigs, setShowExampleConfigs] = useState(false);
   // State for the API key input field
   const [apiKeyInput, setApiKeyInput] = useState(apiKey);
 
@@ -150,25 +150,25 @@ export function MCPConfigForm({ showSpreadsheet, setShowSpreadsheet }: { showSpr
     }
   }, [agentState]);
 
-  const handleExampleConfig = (exampleConfig: Record<string, ServerConfig>) => {
-    // Merge the example with existing configs or replace them based on user preference
-    if (Object.keys(configs).length > 0) {
-      const shouldReplace = window.confirm(
-        "Do you want to replace your current configuration with this example? Click 'OK' to replace, or 'Cancel' to merge."
-      );
-
-      if (shouldReplace) {
-        setConfigs(exampleConfig);
-      } else {
-        setConfigs({ ...configs, ...exampleConfig });
-      }
-    } else {
-      setConfigs(exampleConfig);
-    }
-
-    // Close the examples panel after selection
-    setShowExampleConfigs(false);
-  };
+  // const handleExampleConfig = (exampleConfig: Record<string, ServerConfig>) => {
+  //   // Merge the example config with the current configs
+  //   const newConfigs = { ...configs };
+  //   
+  //   // Add each server from the example config
+  //   Object.entries(exampleConfig).forEach(([name, config]) => {
+  //     // Generate a unique name if the server name already exists
+  //     let uniqueName = name;
+  //     let counter = 1;
+  //     while (uniqueName in newConfigs) {
+  //       uniqueName = `${name} (${counter})`;
+  //       counter++;
+  //     }
+  //     newConfigs[uniqueName] = config;
+  //   });
+  //   
+  //   // Update the configs
+  //   setConfigs(newConfigs);
+  // };
 
   const addConfig = () => {
     if (!serverName) return;

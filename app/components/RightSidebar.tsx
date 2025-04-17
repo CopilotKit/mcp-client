@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { MCPConfigForm } from './MCPConfigForm';
-import SpreadsheetRenderer from './SpreadsheetRenderer';
+// import SpreadsheetRenderer from './SpreadsheetRenderer';
 
 interface RightSidebarProps {
   isOpen: boolean;
@@ -10,7 +10,7 @@ interface RightSidebarProps {
 }
 
 export function RightSidebar({ isOpen, onClose }: RightSidebarProps) {
-  const [showSpreadsheet, setShowSpreadsheet] = useState(false);
+  // const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,10 +50,10 @@ export function RightSidebar({ isOpen, onClose }: RightSidebarProps) {
         </div>
         <div className="p-4 overflow-y-auto h-[calc(100vh-65px)]">
           <MCPConfigForm 
-            showSpreadsheet={showSpreadsheet} 
-            setShowSpreadsheet={setShowSpreadsheet} 
+            // showSpreadsheet={showSpreadsheet} 
+            // setShowSpreadsheet={setShowSpreadsheet} 
           />
-          {showSpreadsheet && <SpreadsheetRenderer />}
+          {/* {showSpreadsheet && <SpreadsheetRenderer />} */}
         </div>
       </div>
     </>

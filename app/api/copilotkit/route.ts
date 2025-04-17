@@ -25,13 +25,14 @@ const runtime = new CopilotRuntime({
 
 export const POST = async (req: NextRequest) => {
     // Extract the user's API key from the request headers
-    const openaiApiKey = req.headers.get("x-openai-api-key") || process.env["OPENAI_API_KEY"];
+    const openaiApiKey = req.headers.get("x-openai-api-key");
+    console.log("\n ------- OPEN AI KEY",openaiApiKey);
     
     // Create model with the API key from headers
     const model = new ChatOpenAI({
         modelName: "gpt-4o-mini",
         temperature: 0,
-        apiKey: openaiApiKey,
+        apiKey: openaiApiKey || process.env["OPENAI_API_KEY"],
     });
     
     // Create service adapter with the model

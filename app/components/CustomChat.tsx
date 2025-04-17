@@ -4,18 +4,20 @@ import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } f
 import { useCopilotChat } from "@copilotkit/react-core";
 import { useCopilotContext } from "@copilotkit/react-core";
 import { Role, TextMessage, Message } from "@copilotkit/runtime-client-gql";
-import { ArrowUp, Settings, PlusCircle, Plus, MessageSquare, Trash2 ,PanelLeft, PanelLeftDashed, CircleUserRound, CircleStop } from 'lucide-react';
+import { ArrowUp, Settings, Plus, PanelLeft, PanelLeftDashed, CircleStop } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
 
 // Constants
 const CHAT_HISTORY_KEY = 'chat-history';
-const MAX_TITLE_LENGTH = 30;
 
 // Type guard for TextMessage
-const isTextMessage = (message: any): message is TextMessage => {
-  return message && typeof message === 'object' && 'content' in message && 'role' in message;
+const isTextMessage = (message: unknown): message is TextMessage => {
+  return message !== null && 
+         typeof message === 'object' && 
+         message !== undefined && 
+         'content' in message && 
+         'role' in message;
 };
 
 interface ChatSession {
@@ -31,29 +33,8 @@ interface CustomChatProps {
   onSettingsClick?: () => void;
 }
 
-// Helper function to generate chat title from first message
-const generateChatTitle = (message: string): string => {
-  const title = message.slice(0, MAX_TITLE_LENGTH);
-  return title.length < message.length ? `${title}...` : title;
-};
-
-// Simple Markdown parsing function (you might want a more robust library)
-const parseMarkdown = (text: string): string => {
-  // Convert **bold** to <strong>
-  text = text.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
-  // Convert *italic* to <em>
-  text = text.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
-  // Convert `code` to <code>
-  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Convert newlines to <br>
-  text = text.replace(/\n/g, '<br />');
-  // Basic code block ``` ``` detection (improve as needed)
-  text = text.replace(/```(?:\w+\n)?([\s\S]*?)```/g, '<pre class="bg-gray-800 text-white p-2 rounded my-2 overflow-x-auto"><code>$1</code></pre>');
-  return text;
-};
-
 // Helper function to get time-based greeting
-const getTimeBasedGreeting = (userName: string): string => {
+const getTimeBasedGreeting = (): string => {
   const currentHour = new Date().getHours();
   const random = Math.floor(Math.random() * 4); // Random number 0-3 for variety
   
@@ -102,11 +83,10 @@ const getTimeBasedGreeting = (userName: string): string => {
 export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarToggle: () => void }, CustomChatProps>((props, ref) => {
   const { onSettingsClick } = props;
   const { visibleMessages, appendMessage, isLoading, stopGeneration, setMessages } = useCopilotChat();
-  const { threadId, setThreadId } = useCopilotContext();
+  const { setThreadId } = useCopilotContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [greeting, setGreeting] = useState<string>('Hello!');
-  const userName = "Minhaj";
   
   // Chat history state
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
@@ -205,7 +185,23 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     } catch (error) {
       console.error("Error saving chat history:", error);
     }
-  }, [chatHistory]);
+    
+    // Update chat history when messages change
+    if (activeChatId && visibleMessages.length > 0) {
+      setChatHistory(prevHistory => {
+        return prevHistory.map(chat => {
+          if (chat.id === activeChatId) {
+            return {
+              ...chat,
+              messages: visibleMessages,
+              updatedAt: Date.now()
+            };
+          }
+          return chat;
+        });
+      });
+    }
+  }, [visibleMessages, activeChatId, setMessages, setThreadId]);
 
   // Update active chat when messages change
   useEffect(() => {
@@ -225,35 +221,14 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     }
   }, [visibleMessages, activeChatId]);
 
-  // --- DEBUG LOGGING --- 
-  useEffect(() => {
-    console.log("Visible Messages Updated:", JSON.stringify(visibleMessages, null, 2));
-    console.log("Active Chat ID:", activeChatId);
-    if (visibleMessages.length > 0) {
-      const firstMsg = visibleMessages[0];
-      console.log("First message type:", isTextMessage(firstMsg) ? "TextMessage" : "Other");
-      console.log("First message role:", isTextMessage(firstMsg) ? firstMsg.role : "N/A");
-      console.log("First message content:", isTextMessage(firstMsg) ? 
-        (firstMsg.content.substring(0, 50) + "...") : "N/A");
-    }
-    console.log("Message count:", visibleMessages.length);
-    console.log("Chat history count:", chatHistory.length);
-    if (chatHistory.length > 0 && activeChatId) {
-      const activeChat = chatHistory.find(c => c.id === activeChatId);
-      console.log("Active chat title:", activeChat?.title);
-      console.log("Active chat message count:", activeChat?.messages.length);
-    }
-  }, [visibleMessages, activeChatId, chatHistory]);
-  // --- END DEBUG LOGGING ---
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     // Set the greeting on the client side to avoid hydration errors
-    setGreeting(getTimeBasedGreeting(userName));
-  }, [userName]);
+    setGreeting(getTimeBasedGreeting());
+  }, []);
 
   useEffect(scrollToBottom, [visibleMessages]);
 
@@ -368,11 +343,6 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     if (onSettingsClick) {
       onSettingsClick();
     }
-  };
-
-  const clearCurrentThread = () => {
-    setThreadId("");
-    setMessages([]);
   };
 
   return (
@@ -672,3 +642,5 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     </div>
   );
 });
+
+CustomChat.displayName = 'CustomChat';

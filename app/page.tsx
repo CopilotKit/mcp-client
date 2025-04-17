@@ -4,31 +4,41 @@ import { CopilotActionHandler } from "./components/CopilotActionHandler";
 import { CustomChat } from './components/CustomChat';
 import { RightSidebar } from './components/RightSidebar';
 import { SettingsIcon } from './components/Icons';
-import { Plus } from 'lucide-react';
-import SpreadsheetRenderer from "./components/SpreadsheetRenderer";
-import { INSTRUCTIONS } from "./instructions";
-import { useState, useRef } from "react";
-import { MCPConfigForm } from "./components/MCPConfigForm";
+import { Plus, AlertTriangle } from 'lucide-react';
+// import SpreadsheetRenderer from "./components/SpreadsheetRenderer";
+// import { INSTRUCTIONS } from "./instructions";
+import { useState, useRef, useEffect } from "react";
+// import { MCPConfigForm } from "./components/MCPConfigForm";
 import { PanelLeft } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 
+// Helper function to get a cookie by name
+const getCookie = (name: string): string | undefined => {
+  if (typeof document === 'undefined') return undefined; 
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  return undefined;
+};
+
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showSpreadsheet, setShowSpreadsheet] = useState(false);
+  const [showApiKeyNotification, setShowApiKeyNotification] = useState(false); 
+  // const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const chatRef = useRef<{ handleNewChat: () => void, handleSidebarToggle: () => void }>(null);
+
+  useEffect(() => {
+    // Check for API key cookie on mount
+    const apiKey = getCookie('openai-api-key');
+    if (!apiKey) {
+      setShowApiKeyNotification(true);
+    }
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Client component that sets up the Copilot action handler */}
       <CopilotActionHandler />
-
-      {/* Main content area (optional, could be integrated elsewhere or removed if chat is the main focus) */}
-      {/* This section below should be removed as it duplicates the sidebar content */}
-      {/* <div className="flex-1 p-4 md:p-8 lg:mr-[30vw]"> */}
-      {/*   <MCPConfigForm showSpreadsheet={showSpreadsheet} */}
-      {/*     setShowSpreadsheet={setShowSpreadsheet} /> */}
-      {/*   {showSpreadsheet && <SpreadsheetRenderer />} */}
-      {/* </div> */}
 
       {/* Chat Area - takes full width or most width, sidebar overlays */}
       <div className=" flex-1 flex flex-col relative">
@@ -78,10 +88,34 @@ export default function Home() {
            </div>
         </div>
 
-        {/* Custom Chat Component */}
+       
+
+          {/* Custom Chat Component */} 
         <div className="flex-grow pt-16"> {/* Ensure chat takes remaining height */}
-           <CustomChat ref={chatRef} onSettingsClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+            {showApiKeyNotification && (
+              <div className="absolute top-20 left-0 right-0 z-50 flex justify-center">
+                <div className="max-w-2xl w-full mx-auto px-4">
+                  <div className="rounded-xl border border-[#c96442] bg-[#fff8f5] px-6 py-4 shadow-md flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-6 h-6 text-[#c96442] mt-1 flex-shrink-0" />
+                      <div className="text-sm text-[#7d3f2a]">
+                        <p className="font-semibold mb-1">Missing API Key</p>
+                        <p>Please add your OpenAI API key to unlock all features of this chat experience.</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="self-center bg-[#c96442] hover:bg-[#b05739] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      Open Settings
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <CustomChat ref={chatRef} onSettingsClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         </div>
+
       </div>
 
       {/* Right Sidebar for Settings/Data */}
