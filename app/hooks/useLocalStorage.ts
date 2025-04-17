@@ -35,21 +35,46 @@ export function useLocalStorage<T>(
 
   // Save to localStorage whenever value changes
   useEffect(() => {
-    // Only save after the initial mount/load effect has run
+    // Only save after the initial mount/load effect has run.
+    // isMounted.current ensures the load effect tried to run at least once.
     if (!isMounted.current) {
       return;
     }
 
-    // Don't re-save the value that was just loaded from storage
-    // This check might be overly cautious but prevents an unnecessary write on load
-    try {
-      const currentStorageValue = localStorage.getItem(key);
-      if (currentStorageValue === JSON.stringify(storedValue)) {
-         return;
-      }
-    } catch {
-      // Ignore errors reading here, proceed to save
+    // Do not save the initialValue on the first run after mount
+    // if it hasn't been changed by setValue yet. This prevents overwriting
+    // the stored value with the default initialValue before loading finishes.
+    // We can check if the value is still the initial one passed to the hook.
+    // Note: This comparison might be tricky for objects/arrays if they are mutated.
+    // Consider a deep comparison or a different flag if initialValue isn't primitive.
+    if (storedValue === initialValue) {
+        // Check if the value actually exists in storage. If it does, don't overwrite with initial.
+        try {
+            const currentItem = localStorage.getItem(key);
+            if (currentItem !== null && JSON.parse(currentItem) !== initialValue) {
+                // console.log("Skipping save of initialValue, stored value exists:", key);
+                return;
+            }
+        } catch (error) {
+            console.error(`Error reading localStorage during initial value check for key "${key}":`, error);
+            // If read fails, maybe safer not to save initialValue yet.
+            return;
+        }
     }
+
+    // Avoid re-saving the exact value currently in storage
+    try {
+        const currentItem = localStorage.getItem(key);
+        // Check if currentItem is not null before parsing
+        if (currentItem !== null && JSON.stringify(storedValue) === currentItem) {
+            // console.log("Skipping save, value already in storage:", key);
+            return;
+        }
+    } catch (error) {
+        console.error(`Error reading localStorage before save for key "${key}":`, error);
+        // Proceed with saving even if read fails, as the value has changed
+    }
+
 
     try {
       setSaveStatus('saving');

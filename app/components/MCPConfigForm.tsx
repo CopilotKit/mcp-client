@@ -67,6 +67,10 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Strict`;
   };
 
+  // State for the API key input field - DECLARE EARLY
+  // Initialize with potentially empty value from localStorage hook initially
+  const [apiKeyInput, setApiKeyInput] = useState(savedApiKey || "");
+
   // Initialize agent state with the data from localStorage
   const { state: agentState, setState: setAgentState } = useCoAgent<AgentState>(
     {
@@ -78,7 +82,40 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
     }
   );
 
-  // Simple getter for configs
+  // Effect to synchronize agentState API key when savedApiKey changes
+  useEffect(() => {
+    const currentAgentKey = agentState?.openai_api_key;
+    // Update agentState only if the loaded key is different
+    if (savedApiKey !== currentAgentKey) {
+      // Ensure mcp_config is preserved correctly
+      setAgentState(prevState => ({ 
+        ...prevState,
+        mcp_config: prevState?.mcp_config || {}, 
+        openai_api_key: savedApiKey 
+      }));
+    }
+    // Also update the local input state if it doesn't match the loaded key
+    // This covers the initial load case where agentState might update after input is set
+    if (apiKeyInput !== savedApiKey) {
+      setApiKeyInput(savedApiKey || '');
+    }
+    // Dependencies: run when loaded key changes, or if agent key changes externally
+  }, [savedApiKey, agentState?.openai_api_key, setAgentState, apiKeyInput]); 
+
+  // Effect to synchronize agentState mcp_config when savedConfigs changes
+  useEffect(() => {
+    // Basic check to avoid unnecessary updates if objects are identical
+    if (JSON.stringify(savedConfigs) !== JSON.stringify(agentState?.mcp_config)) {
+      // Ensure openai_api_key is preserved correctly
+      setAgentState(prevState => ({ 
+        ...prevState, // Spread existing state first
+        openai_api_key: prevState?.openai_api_key, // Explicitly keep existing api key
+        mcp_config: savedConfigs // Update the configs
+      }));
+    }
+  }, [savedConfigs, agentState?.mcp_config, setAgentState]);
+
+  // Simple getter for configs - use agentState as the source of truth
   const configs = agentState?.mcp_config || {};
   
   // Simple getter for API key
@@ -106,33 +143,6 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
   const [isLoading, setIsLoading] = useState(true);
   const [showAddServerForm, setShowAddServerForm] = useState(false);
   // const [showExampleConfigs, setShowExampleConfigs] = useState(false);
-  // State for the API key input field
-  const [apiKeyInput, setApiKeyInput] = useState(apiKey);
-
-  // Update input field if apiKey changes (e.g., loaded from storage or removed)
-  useEffect(() => {
-    setApiKeyInput(apiKey);
-  }, [apiKey]);
-
-  // Handler to save the API key
-  const handleSaveApiKey = () => {
-    // Trim the input before saving
-    const trimmedKey = apiKeyInput.trim();
-    if (trimmedKey) {
-      setApiKey(trimmedKey); // This updates agent state and localStorage
-      // Refresh the page to apply the new API key
-      window.location.reload();
-    }
-  };
-
-  // Handler to remove the API key
-  const handleRemoveApiKey = () => {
-    setApiKey(""); // This clears agent state and localStorage
-    removeCookie("openai-api-key"); // Also remove the cookie
-    // Refresh the page to apply the API key removal
-    window.location.reload();
-    // Input field updates via useEffect hook reacting to `apiKey` change
-  };
 
   // Calculate server statistics
   const totalServers = Object.keys(configs).length;
@@ -149,26 +159,6 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
       setIsLoading(false);
     }
   }, [agentState]);
-
-  // const handleExampleConfig = (exampleConfig: Record<string, ServerConfig>) => {
-  //   // Merge the example config with the current configs
-  //   const newConfigs = { ...configs };
-  //   
-  //   // Add each server from the example config
-  //   Object.entries(exampleConfig).forEach(([name, config]) => {
-  //     // Generate a unique name if the server name already exists
-  //     let uniqueName = name;
-  //     let counter = 1;
-  //     while (uniqueName in newConfigs) {
-  //       uniqueName = `${name} (${counter})`;
-  //       counter++;
-  //     }
-  //     newConfigs[uniqueName] = config;
-  //   });
-  //   
-  //   // Update the configs
-  //   setConfigs(newConfigs);
-  // };
 
   const addConfig = () => {
     if (!serverName) return;
@@ -441,7 +431,13 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
             />
             {/* Save Button */}
             <button
-              onClick={handleSaveApiKey}
+              onClick={() => {
+                const trimmedKey = apiKeyInput.trim();
+                if (trimmedKey) {
+                  setApiKey(trimmedKey);
+                  window.location.reload();
+                }
+              }}
               className={`p-2 rounded-md transition-colors ${
                 apiKeyInput.trim() && apiKeyInput.trim() !== apiKey
                   ? "text-green-800 hover:text-white hover:bg-green-700"
@@ -455,7 +451,11 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
             {/* Remove Button - shown only if key is saved */}
             {apiKey && (
               <button
-                onClick={handleRemoveApiKey}
+                onClick={() => {
+                  setApiKey("");
+                  removeCookie("openai-api-key");
+                  window.location.reload();
+                }}
                 className="p-2 text-red-800 hover:text-white hover:bg-red-400 rounded-md transition-colors"
                 aria-label="Remove API Key"
               >
