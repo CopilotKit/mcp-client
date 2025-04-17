@@ -47,7 +47,12 @@ const ExternalLink = () => (
   </svg>
 );
 
-export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { showSpreadsheet: boolean, setShowSpreadsheet: (value: boolean) => void } */) {
+// Define props type including the callback
+interface MCPConfigFormProps {
+  onApiKeySaved: () => void;
+}
+
+export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
   // Use our localStorage hook for persistent storage
   const [savedConfigs, setSavedConfigs] = useLocalStorage<
     Record<string, ServerConfig>
@@ -100,7 +105,7 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
       setApiKeyInput(savedApiKey || '');
     }
     // Dependencies: run when loaded key changes, or if agent key changes externally
-  }, [savedApiKey, agentState?.openai_api_key, setAgentState, apiKeyInput]); 
+  }, [savedApiKey, agentState?.openai_api_key, setAgentState]); 
 
   // Effect to synchronize agentState mcp_config when savedConfigs changes
   useEffect(() => {
@@ -131,8 +136,8 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
   const setApiKey = (newApiKey: string) => {
     setAgentState({ ...agentState, openai_api_key: newApiKey });
     setSavedApiKey(newApiKey);
-    // Also set the API key in a cookie for server components
     setCookie("openai-api-key", newApiKey);
+    onApiKeySaved(); // Call the callback function here
   };
 
   const [serverName, setServerName] = useState("");
@@ -435,7 +440,6 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
                 const trimmedKey = apiKeyInput.trim();
                 if (trimmedKey) {
                   setApiKey(trimmedKey);
-                  window.location.reload();
                 }
               }}
               className={`p-2 rounded-md transition-colors ${
@@ -454,7 +458,6 @@ export function MCPConfigForm(/* { showSpreadsheet, setShowSpreadsheet }: { show
                 onClick={() => {
                   setApiKey("");
                   removeCookie("openai-api-key");
-                  window.location.reload();
                 }}
                 className="p-2 text-red-800 hover:text-white hover:bg-red-400 rounded-md transition-colors"
                 aria-label="Remove API Key"
