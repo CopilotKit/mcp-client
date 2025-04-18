@@ -68,10 +68,10 @@ export default function Home() {
             )}
             <div className="flex items-center gap-3">
               <Image 
-                src="/logo.svg" 
+                src="/logo-light.svg" 
                 alt="CopilotKit Logo" 
-                width={150} 
-                height={35} 
+                width={140} 
+                height={32} 
                 priority
                 className="h-auto"
               />
