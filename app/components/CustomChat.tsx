@@ -222,6 +222,16 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     }
   }, [visibleMessages, activeChatId]);
 
+  // This effect handles the case where a new chat gets its first message
+  // It ensures the chat appears in the sidebar once it has content
+  useEffect(() => {
+    // If we have an active chat and it just got its first message
+    if (activeChatId && visibleMessages.length === 1 && isTextMessage(visibleMessages[0]) && visibleMessages[0].role === Role.User) {
+      // Force a re-render of the sidebar by updating the chat history
+      setChatHistory(prev => [...prev]);
+    }
+  }, [visibleMessages, activeChatId]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -234,6 +244,14 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   useEffect(scrollToBottom, [visibleMessages]);
 
   const handleNewChat = () => {
+    // Check if the current chat is already a new empty chat
+    const currentChat = activeChatId ? chatHistory.find(chat => chat.id === activeChatId) : null;
+    
+    // If we're already in a new chat with no messages, don't create another one
+    if (currentChat && currentChat.messages.length === 0) {
+      return; // Already in a new chat, no need to create another one
+    }
+    
     const newChatId = Date.now().toString();
     const threadId = uuidv4();  // Create a valid UUID for LangGraph Platform
     
@@ -358,7 +376,9 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
           </button>
         </div>
         <div className="overflow-y-auto h-[calc(100%-5rem)]">
-          {chatHistory.map((chat) => (
+          {chatHistory
+            .filter(chat => chat.messages.length > 0) // Only show chats with messages
+            .map((chat) => (
             <div
               key={chat.id}
               onClick={() => loadChat(chat.id)}
