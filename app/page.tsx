@@ -25,12 +25,14 @@ export default function Home() {
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [showApiKeyNotification, setShowApiKeyNotification] = useState(false); 
+  const [hasApiKey, setHasApiKey] = useState(true); 
   // const [showSpreadsheet, setShowSpreadsheet] = useState(false);
   const chatRef = useRef<{ handleNewChat: () => void; handleSidebarToggle: () => void }>(null);
 
   // Function to hide the notification banner
   const handleApiKeySaved = () => {
     setShowApiKeyNotification(false);
+    setHasApiKey(true); 
   };
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export default function Home() {
     const apiKey = getCookie('openai-api-key');
     if (!apiKey) {
       setShowApiKeyNotification(true);
+      setHasApiKey(false); 
     }
   }, []);
 
@@ -145,6 +148,7 @@ export default function Home() {
             isSidebarOpen={isLeftSidebarOpen}
             onSidebarToggle={handleLeftSidebarToggle}
             onSettingsClick={() => setIsRightSidebarOpen(true)}
+            hasApiKey={hasApiKey} 
           />
         </div>
       </div>

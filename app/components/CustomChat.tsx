@@ -33,6 +33,7 @@ interface CustomChatProps {
   onSettingsClick?: () => void;
   isSidebarOpen: boolean;
   onSidebarToggle: () => void;
+  hasApiKey?: boolean;
 }
 
 // Helper function to get time-based greeting
@@ -83,7 +84,7 @@ const getTimeBasedGreeting = (): string => {
 };
 
 export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarToggle: () => void }, CustomChatProps>((props, ref) => {
-  const { onSettingsClick, isSidebarOpen, onSidebarToggle } = props;
+  const { onSettingsClick, isSidebarOpen, onSidebarToggle, hasApiKey = true } = props;
   const { visibleMessages, appendMessage, isLoading, stopGeneration, setMessages } = useCopilotChat();
   const { setThreadId } = useCopilotContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -609,17 +610,31 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
           <div className="border-t border-gray-100 bg-[#faf9f5] w-full py-4">
             <div className="max-w-3xl mx-auto">
               {/* Input Row */}
-              <div className="fixed bottom-1 bg-white rounded-lg shadow-sm border border-gray-400 overflow-hidden z-50 w-full max-w-3xl">
+              <div className="fixed bottom-5 bg-white rounded-lg shadow-sm border border-gray-400 overflow-hidden z-50 w-full max-w-3xl">
                 <div className="relative">
                   <input
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    placeholder="How can I help you today?"
+                    placeholder={hasApiKey ? "How can I help you today?" : "Please add your OpenAI API key to use the chat"}
                     className="w-full px-4 py-3 border-none focus:outline-none focus:ring-0 text-gray-800"
-                    disabled={isLoading}
+                    disabled={isLoading || !hasApiKey}
                   />
+                  {/* Add overlay when API key is missing */}
+                  {!hasApiKey && (
+                    <div 
+                      className="absolute inset-0 bg-gray-100 bg-opacity-60 flex items-center justify-center cursor-not-allowed"
+                      onClick={onSettingsClick}
+                    >
+                      <div className="text-sm text-gray-600 font-medium flex items-center">
+                        <span className="mr-2">Add API Key to unlock chat</span>
+                        <button className="px-3 py-1 bg-[#120635] hover:bg-[#6666fc] text-white rounded-md text-xs">
+                          Open Settings
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-between items-center px-4 py-2">
                   <div className="flex items-center space-x-3">
@@ -643,8 +658,8 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                     ) : (
                       <button
                         onClick={sendMessage}
-                        disabled={!inputValue.trim()}
-                        className={`p-1.5 rounded-md ${inputValue.trim() ? 'bg-[#6666FC] text-white' : 'bg-[#120635] text-white'} hover:bg-[#6666FC] hover:text-white transition-colors`}
+                        disabled={!inputValue.trim() || !hasApiKey}
+                        className={`p-1.5 rounded-md ${inputValue.trim() && hasApiKey ? 'bg-[#6666FC] text-white' : 'bg-[#120635] text-white'} hover:bg-[#6666FC] hover:text-white transition-colors`}
                       >
                         <ArrowUp className="w-5 h-5" />
                       </button>
