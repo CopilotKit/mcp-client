@@ -11,7 +11,7 @@ import { useState, useRef, useEffect } from "react";
 // import { MCPConfigForm } from "./components/MCPConfigForm";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 
-// Helper function to get a cookie by name
+// Helper function
 const getCookie = (name: string): string | undefined => {
   if (typeof document === 'undefined') return undefined; 
   const value = `; ${document.cookie}`;
