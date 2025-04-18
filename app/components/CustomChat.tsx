@@ -38,6 +38,10 @@ interface CustomChatProps {
 
 // Helper function to get time-based greeting
 const getTimeBasedGreeting = (): string => {
+  // Static greeting about CopilotKit MCP Client
+  return "👋 Welcome to CopilotKit Open MCP Client\nYou can add your MCP servers in the settings and start chatting. Enjoy! 😊";
+  
+  /*
   const currentHour = new Date().getHours();
   const random = Math.floor(Math.random() * 4); // Random number 0-3 for variety
   
@@ -81,6 +85,7 @@ const getTimeBasedGreeting = (): string => {
     ];
     return lateNightGreetings[random];
   }
+  */
 };
 
 export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarToggle: () => void }, CustomChatProps>((props, ref) => {
@@ -481,7 +486,21 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
           {visibleMessages.length === 0 ? (
             <div className="text-center -mt-64">
               <div className="flex justify-center items-center mb-8">
-                <h1 className="text-5xl text-gray-700 font-serif">{greeting}</h1>
+                <h1 className="text-2xl font-bold text-[#120635] font-serif whitespace-pre-line">{greeting}</h1>
+              </div>
+              {/* GitHub link */}
+              <div className="flex justify-center items-center mb-8">
+                <a 
+                  href="https://github.com/CopilotKit/mcp-client" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
+                  <span>View on GitHub</span>
+                </a>
               </div>
               {/* Input area for initial state */}
               <div className="bg-white rounded-lg shadow-md border border-gray-400 overflow-hidden p-1 max-w-2xl mx-auto">
