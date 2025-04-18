@@ -141,7 +141,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
   };
 
   const [serverName, setServerName] = useState("");
-  const [connectionType, setConnectionType] = useState<ConnectionType>("stdio");
+  const [connectionType, setConnectionType] = useState<ConnectionType>("sse");
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
   const [url, setUrl] = useState("");
@@ -282,7 +282,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                         value={serverName}
                         onChange={(e) => setServerName(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Unique name (e.g., local-agent)"
+                        placeholder="Give a name for your agent"
                       />
                     </div>
 
@@ -291,31 +291,6 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                         Connection Type
                       </label>
                       <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setConnectionType("stdio")}
-                          className={`px-3 py-2 border rounded-md text-center flex items-center justify-center text-sm ${
-                            connectionType === "stdio"
-                              ? "bg-[#d4e1ff] border-[#6666fc] text-[#6666fc] font-medium ring-1 ring-[#6666fc]"
-                              : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                          }`}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 h-4 mr-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 9l3 3m0 0l3-3m-3 3v8m0-13.5a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          STDIO
-                        </button>
                         <button
                           type="button"
                           onClick={() => setConnectionType("sse")}
@@ -340,6 +315,31 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                             />
                           </svg>
                           SSE
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConnectionType("stdio")}
+                          className={`px-3 py-2 border rounded-md text-center flex items-center justify-center text-sm ${
+                            connectionType === "stdio"
+                              ? "bg-[#d4e1ff] border-[#6666fc] text-[#6666fc] font-medium ring-1 ring-[#6666fc]"
+                              : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 9l3 3m0 0l3-3m-3 3v8m0-13a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          STDIO
                         </button>
                       </div>
                     </div>
@@ -393,10 +393,17 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                           value={url}
                           onChange={(e) => setUrl(e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          placeholder="e.g., http://localhost:5000/copilot"
+                          placeholder="add your agent URL here"
                         />
                       </div>
                     )}
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-gray-200 text-center text-sm text-gray-700">
+                    Discover more servers at
+                    <a href="https://mcp.composio.dev/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center ml-1">
+                      mcp.composio.dev <ExternalLink />
+                    </a>
                   </div>
 
                   <div className="flex justify-end space-x-3 pt-5 mt-4 border-t border-gray-200">
