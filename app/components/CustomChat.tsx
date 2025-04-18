@@ -343,15 +343,15 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   };
 
   return (
-    <div className="flex h-full bg-[#faf9f5]">
+    <div className="flex h-full bg-[#F5F8FF]">
       {/* Chat History Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} h-screen fixed left-0 top-0 bg-[#f5f4ed] border-r border-gray-200 transition-all duration-300 overflow-hidden z-[70]`}>
+      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} h-screen fixed left-0 top-0 bg-[#FFFBF5] border-r border-gray-200 transition-all duration-300 overflow-hidden z-[70]`}>
         <div className="pt-16 p-4">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center gap-2 px-3 py-1.5 text-[#c96442] font-bold rounded-md hover:bg-[#e8e6dc] transition-colors text-sm"
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-[#6666FC] font-bold rounded-md hover:text-[#120635] transition-colors text-sm"
           >
-            <div className="bg-[#c96442] rounded-full p-1">
+            <div className="bg-[#6666FC] hover:bg-[#120635] rounded-full p-1">
               <Plus size={16} className="text-white" />
             </div>
             New chat
@@ -362,8 +362,8 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
             <div
               key={chat.id}
               onClick={() => loadChat(chat.id)}
-              className={`group flex items-center justify-between p-3 hover:bg-[#e8e6dc] cursor-pointer relative rounded-md mx-2 my-1 text-sm ${
-                activeChatId === chat.id ? 'bg-[#e8e6dc]' : ''
+              className={`group flex items-center justify-between p-3 hover:bg-[#D4E1FF] cursor-pointer relative rounded-md mx-2 my-1 text-sm ${
+                activeChatId === chat.id ? 'bg-[#D4E1FF]' : ''
               }`}
             >
               <div className="flex items-center gap-2 truncate flex-grow">
@@ -488,7 +488,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                     <button
                       onClick={sendMessage}
                       disabled={isLoading || !inputValue.trim()}
-                      className={`p-1.5 rounded-md ${inputValue.trim() ? 'bg-[#c96442] text-white' : 'bg-[#e4b1a0] text-white'} hover:bg-[#c96442] hover:text-white transition-colors`}
+                      className={`p-1.5 rounded-md ${inputValue.trim() ? 'bg-[#6666FC] text-white' : 'bg-[#120635] text-white'} hover:bg-[#6666FC] hover:text-white transition-colors`}
                     >
                       <ArrowUp className="w-5 h-5" />
                     </button>
@@ -510,7 +510,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                   alignmentClass = 'justify-start';  
                   contentToRender = (
                     <div className="flex items-center gap-3">
-                      <div className={`inline-flex items-center gap-2 max-w-3xl bg-[#e8e6dc] px-3 py-2 rounded-lg text-gray-800`}>
+                      <div className={`inline-flex items-center gap-2 max-w-3xl bg-[#D4E1FF] px-3 py-2 rounded-lg text-gray-800`}>
                         <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 p-1">
                           <span className="text-white font-bold text-sm">U</span>
                         </div>
@@ -624,7 +624,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                       <button
                         onClick={sendMessage}
                         disabled={!inputValue.trim()}
-                        className={`p-1.5 rounded-md ${inputValue.trim() ? 'bg-[#c96442] text-white' : 'bg-[#e4b1a0] text-white'} hover:bg-[#c96442] hover:text-white transition-colors`}
+                        className={`p-1.5 rounded-md ${inputValue.trim() ? 'bg-[#6666FC] text-white' : 'bg-[#120635] text-white'} hover:bg-[#6666FC] hover:text-white transition-colors`}
                       >
                         <ArrowUp className="w-5 h-5" />
                       </button>

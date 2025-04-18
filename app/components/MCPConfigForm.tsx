@@ -224,7 +224,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
             <div className="relative w-full sm:w-auto">
               <button
                 onClick={() => setShowAddServerForm(!showAddServerForm)}
-                className="w-full sm:w-auto px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#c96442] hover:bg-[#e4b1a0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c96442] flex items-center gap-1 justify-center"
+                className="w-full sm:w-auto px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#6666FC] hover:bg-[#120635] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6666FC] flex items-center gap-1 justify-center"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -296,7 +296,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                           onClick={() => setConnectionType("stdio")}
                           className={`px-3 py-2 border rounded-md text-center flex items-center justify-center text-sm ${
                             connectionType === "stdio"
-                              ? "bg-[#fff4ec] border-[#c96442] text-[#c96442] font-medium ring-1 ring-[#c96442]"
+                              ? "bg-[#d4e1ff] border-[#6666fc] text-[#6666fc] font-medium ring-1 ring-[#6666fc]"
                               : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                           }`}
                         >
@@ -321,7 +321,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                           onClick={() => setConnectionType("sse")}
                           className={`px-3 py-2 border rounded-md text-center flex items-center justify-center text-sm ${
                             connectionType === "sse"
-                              ? "bg-[#fff4ec] border-[#c96442] text-[#c96442] font-medium ring-1 ring-[#c96442]"
+                              ? "bg-[#d4e1ff] border-[#6666fc] text-[#6666fc] font-medium ring-1 ring-[#6666fc]"
                               : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                           }`}
                         >
@@ -410,7 +410,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                     <button
                       type="button"
                       onClick={addConfig}
-                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#c96442] hover:bg-[#e4b1a0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#6666fc] hover:bg-[#120635] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       Add Server
                     </button>
@@ -474,29 +474,29 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
 
       {/* Server Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-[#f5f4ed] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
+        <div className="bg-[#FFFBF5] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
           <h3 className="text-sm font-medium text-gray-900 mb-1">Total Servers</h3>
           <p className="text-2xl font-semibold text-gray-900">{totalServers}</p>
         </div>
-        <div className="bg-[#f5f4ed] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
+        <div className="bg-[#FFFBF5] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
           <h3 className="text-sm font-medium text-gray-900 mb-1">Stdio Servers</h3>
           <p className="text-2xl font-semibold text-gray-900">{stdioServers}</p>
         </div>
-        <div className="bg-[#f5f4ed] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
+        <div className="bg-[#FFFBF5] border-1 border-gray-400 rounded-lg p-4 shadow-sm">
           <h3 className="text-sm font-medium text-gray-900 mb-1">SSE Servers</h3>
           <p className="text-2xl font-semibold text-gray-900">{sseServers}</p>
         </div>
       </div>
 
       {/* Server List */}
-      <div className="bg-[#f5f4ed] border-1 border-gray-400 rounded-lg p-6 shadow-sm">
+      <div className="bg-[#FFFBF5] border-1 border-gray-400 rounded-lg p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4 text-gray-900">Server List</h2>
         {totalServers === 0 ? (
           <p className="text-gray-500 italic">No servers configured yet.</p>
         ) : (
           <ul className="space-y-3">
             {Object.entries(configs).map(([name, config]) => (
-              <li key={name} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-[#f5f4ed] border-1 border-gray-400 rounded-md gap-2">
+              <li key={name} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-[#FFFBF5] border-1 border-gray-400 rounded-md gap-2">
                 <div className="flex-grow">
                   <span className="font-medium text-gray-800">{name}</span>
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ml-2" style={{backgroundColor: config.transport === 'stdio' ? '#e0e7ff' : '#d1fae5', color: config.transport === 'stdio' ? '#4338ca' : '#065f46'}}>
