@@ -669,7 +669,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                     {isLoading ? (
                       <button
                         onClick={stopGeneration}
-                        className="p-1.5 rounded-md bg-[#c96442] text-white hover:bg-[#e4b1a0] transition-colors"
+                        className="p-1.5 rounded-md bg-[#120635] text-white hover:bg-[#6666fc] transition-colors"
                         title="Stop Generation"
                       >
                         <CircleStop className="w-5 h-5" />
