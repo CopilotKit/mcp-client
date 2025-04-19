@@ -138,6 +138,11 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
     setSavedApiKey(newApiKey);
     setCookie("openai-api-key", newApiKey);
     onApiKeySaved(); // Call the callback function here
+    
+    // Refresh the page after setting the API key
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
   };
 
   const [serverName, setServerName] = useState("");
@@ -465,6 +470,10 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
                 onClick={() => {
                   setApiKey("");
                   removeCookie("openai-api-key");
+                  // Refresh the page after removing the API key
+                  if (typeof window !== 'undefined') {
+                    window.location.reload();
+                  }
                 }}
                 className="p-2 text-red-800 hover:text-white hover:bg-red-400 rounded-md transition-colors"
                 aria-label="Remove API Key"
