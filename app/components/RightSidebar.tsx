@@ -39,7 +39,7 @@ export function RightSidebar({ isOpen, onClose, onApiKeySaved }: RightSidebarPro
       <div className="fixed inset-0 bg-black/20 z-[70]" onClick={onClose} />
       <div 
         ref={sidebarRef}
-        className="fixed top-0 right-0 h-full w-full md:w-[80vw] lg:w-[30vw] bg-[#f5f4ed] shadow-lg border-l border-gray-200 z-[70] transform transition-transform duration-300 ease-in-out translate-x-0"
+        className="fixed top-0 right-0 h-full w-full md:w-[80vw] lg:w-[30vw] bg-[#FFFBF5] shadow-lg border-l border-gray-200 z-[70] transform transition-transform duration-300 ease-in-out translate-x-0"
       >
         <div className="p-4 flex justify-between items-center border-b">
           <h2 className="text-lg font-semibold">Settings </h2>
