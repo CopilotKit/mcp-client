@@ -37,10 +37,19 @@ interface CustomChatProps {
 }
 
 // Helper function to get time-based greeting
-const getTimeBasedGreeting = (): string => {
+const getTimeBasedGreeting = (): React.ReactNode => {
   // Static greeting about CopilotKit MCP Client
-  return "👋 Welcome to CopilotKit Open MCP Client\nYou can add your MCP servers in the settings and start chatting. Enjoy! 😊";
-  
+  return (
+    <div className="text-center">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+        👋 Welcome to <span className="text-blue-900">CopilotKit Open MCP Client</span>
+      </h1>
+      <p className="mt-3 text-base md:text-lg text-gray-600">
+        You can add your MCP servers in the settings and start chatting.
+        <span className="text-yellow-500 font-semibold ml-1">Enjoy! 😊</span>
+      </p>
+    </div>
+  );
   /*
   const currentHour = new Date().getHours();
   const random = Math.floor(Math.random() * 4); // Random number 0-3 for variety
@@ -94,7 +103,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   const { setThreadId } = useCopilotContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState('');
-  const [greeting, setGreeting] = useState<string>('Hello!');
+  const [greeting, setGreeting] = useState<React.ReactNode>('Hello!');
   
   // Chat history state
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
@@ -369,8 +378,8 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   return (
     <div className="flex h-full bg-[#F5F8FF]">
       {/* Chat History Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} h-screen fixed left-0 top-0 bg-[#FFFBF5] border-r border-gray-200 transition-all duration-300 overflow-hidden z-[70]`}>
-        <div className="pt-16 p-4">
+      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} h-screen fixed left-0 top-0 bg-[#FFFBF5] border-r border-gray-200 transition-all duration-300 overflow-hidden z-[10]`}>
+        <div className="pt-24 p-4">
           <button
             onClick={handleNewChat}
             className="w-full flex items-center gap-2 px-3 py-1.5 text-[#6666FC] font-bold rounded-md hover:text-[#120635] transition-colors text-sm"

@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Open MCP Client",
   description: "An open source MCP client built with CopilotKit ",
+  icons: {
+    icon: '/icon.png', 
+  },
 };
 
 

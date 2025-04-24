@@ -4,7 +4,7 @@ import { CopilotActionHandler } from "./components/CopilotActionHandler";
 import { CustomChat } from './components/CustomChat';
 import { RightSidebar } from './components/RightSidebar';
 import { SettingsIcon } from './components/Icons';
-import { Plus, AlertTriangle, PanelLeft } from 'lucide-react';
+import { Plus, AlertTriangle, PanelLeft, PanelLeftDashed } from 'lucide-react';
 // import SpreadsheetRenderer from "./components/SpreadsheetRenderer";
 // import { INSTRUCTIONS } from "./instructions";
 import { useState, useRef, useEffect } from "react";
@@ -59,16 +59,14 @@ export default function Home() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative">
         {/* Header */}
-        <div className={`fixed top-0 right-0 bg-[#6666FC] p-4 flex justify-between items-center z-[60] transition-all duration-300 ${isLeftSidebarOpen ? 'left-72' : 'left-0'}`}>
-          <div className={`flex items-center gap-4 ${isLeftSidebarOpen ? 'pl-0' : 'pl-0'}`}>
-            {!isLeftSidebarOpen && (
-              <button
-                onClick={handleLeftSidebarToggle}
-                className="text-white hover:text-gray-800"
-              >
-                <PanelLeft size={20} />
-              </button>
-            )}
+        <div className={`fixed top-0 left-0 right-0 bg-[#6666FC] p-4 flex justify-between items-center z-[60] transition-all duration-300`}>
+          <div className={`flex items-center gap-4 pl-4`}> 
+            <button
+              onClick={handleLeftSidebarToggle}
+              className="text-white hover:text-gray-800"
+            >
+              {isLeftSidebarOpen ? <PanelLeftDashed size={20} /> : <PanelLeft size={20} />}
+            </button>
             <div className="flex items-center gap-3">
               <Image 
                 src="/logo-light.svg" 
@@ -76,7 +74,7 @@ export default function Home() {
                 width={140} 
                 height={32} 
                 priority
-                className="h-auto"
+                className="h-auto transition-opacity duration-200 hover:opacity-80"
               />
               {/* <h1 className="text-2xl font-semibold text-white"><b>CopilotKit Open MCP Client</b></h1> */}
             </div>
