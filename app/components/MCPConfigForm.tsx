@@ -105,7 +105,7 @@ export function MCPConfigForm({ onApiKeySaved }: MCPConfigFormProps) {
       setApiKeyInput(savedApiKey || '');
     }
     // Dependencies: run when loaded key changes, or if agent key changes externally
-  }, [savedApiKey, agentState?.openai_api_key, setAgentState]); 
+  }, [savedApiKey, agentState?.openai_api_key, setAgentState, apiKeyInput, setApiKeyInput]);
 
   // Effect to synchronize agentState mcp_config when savedConfigs changes
   useEffect(() => {
