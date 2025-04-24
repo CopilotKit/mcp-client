@@ -5,7 +5,7 @@ import { useCopilotChat } from "@copilotkit/react-core";
 import { useCopilotContext } from "@copilotkit/react-core";
 import { Role, TextMessage, Message } from "@copilotkit/runtime-client-gql";
 import { ArrowUp, Settings, Plus, PanelLeft, PanelLeftDashed, CircleStop } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import { v4 as uuidv4 } from 'uuid';
 
 // Constants
@@ -102,6 +102,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   const { visibleMessages, appendMessage, isLoading, stopGeneration, setMessages } = useCopilotChat();
   const { setThreadId } = useCopilotContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [greeting, setGreeting] = useState<React.ReactNode>('Hello!');
   
@@ -247,6 +248,13 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     }
   }, [visibleMessages, activeChatId]);
 
+  useEffect(() => {
+    // Focus input when component mounts, messages change, or new chat is created
+    if (inputRef.current && !isLoading) {
+      inputRef.current.focus();
+    }
+  }, [visibleMessages, isLoading]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -276,16 +284,16 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     
     // Small delay to ensure thread is cleared before setting the new one
     setTimeout(() => {
-      const newChat: ChatSession = {
-        id: newChatId,
+    const newChat: ChatSession = {
+      id: newChatId,
         threadId: threadId,
-        title: 'New Chat',
-        messages: [],
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      };
-      
-      setChatHistory(prev => [newChat, ...prev]);
+      title: 'New Chat',
+      messages: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+
+    setChatHistory(prev => [newChat, ...prev]);
       setActiveChatId(newChatId);
       setThreadId(threadId);  // Set the thread ID in CopilotKit
       setInputValue('');
@@ -373,6 +381,14 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
     if (onSettingsClick) {
       onSettingsClick();
     }
+  };
+
+  const markdownComponents: Components = {
+    a: ({ node, children, ...props }) => (
+      <a target="_blank" rel="noopener noreferrer" {...props}>
+        {children}
+      </a>
+    )
   };
 
   return (
@@ -490,7 +506,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
           </button>
         </div>
         {/* Main content area */}
-        <div className={`flex-grow flex flex-col ${visibleMessages.length === 0 ? 'justify-center' : 'justify-start'} max-w-3xl mx-auto w-full px-4 pb-12`}>
+        <div className={`flex-grow flex flex-col ${visibleMessages.length === 0 ? 'justify-center' : 'justify-start'} max-w-3xl mx-auto w-full px-4 pb-12 h-[calc(100vh-120px)]`}>
           {/* Initial State: Centered Greeting  */}
           {visibleMessages.length === 0 ? (
             <div className="text-center -mt-64">
@@ -515,6 +531,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
               <div className="bg-white rounded-lg shadow-md border border-gray-400 overflow-hidden p-1 max-w-2xl mx-auto">
                 <div className="relative">
                   <input
+                    ref={inputRef}
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
@@ -547,7 +564,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
             </div>
           ) : (
             // Chat View: Messages Area
-            <div className="flex-grow overflow-y-auto py-6 space-y-6 w-full">
+            <div style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }} className="flex-grow overflow-y-auto py-6 space-y-6 w-full [&::-webkit-scrollbar]:hidden max-h-full h-[calc(100vh-180px)]">
               {visibleMessages.map((msg) => {
                 let contentToRender: React.ReactNode = null;
                 let alignmentClass = 'justify-start'; // Default to assistant/left alignment
@@ -563,7 +580,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                         <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 p-1">
                           <span className="text-white font-bold text-sm">U</span>
                         </div>
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        <ReactMarkdown components={markdownComponents}>{msg.content}</ReactMarkdown>
                       </div>
                     </div>
                   );
@@ -596,7 +613,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
                       <div
                       className={`inline-block max-w-3xl text-gray-900 leading-relaxed text-lg prose prose-sm prose-gray max-w-none space-y-6`}
                       >
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        <ReactMarkdown components={markdownComponents}>{msg.content}</ReactMarkdown>
                       </div>
                     );
                   }
@@ -641,6 +658,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
               <div className="fixed bottom-5 bg-white rounded-lg shadow-sm border border-gray-400 overflow-hidden z-50 w-full max-w-3xl">
                 <div className="relative">
                   <input
+                    ref={inputRef}
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
