@@ -384,7 +384,7 @@ export const CustomChat = forwardRef<{ handleNewChat: () => void, handleSidebarT
   };
 
   const markdownComponents: Components = {
-    a: ({ node, children, ...props }) => (
+    a: ({ children, ...props }) => (
       <a target="_blank" rel="noopener noreferrer" {...props}>
         {children}
       </a>
