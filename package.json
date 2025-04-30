@@ -5,10 +5,19 @@
   "scripts": {
     "dev-frontend": "pnpm i && next dev --turbopack",
     "dev-agent": "cd agent && poetry install && poetry run langgraph dev --host localhost --port 8123 --no-browser",
-    "dev": "pnpx concurrently \"pnpm dev-frontend\" \"pnpm dev-agent\" --names ui,agent --prefix-colors blue,green",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build-electron": "tsc --project electron/tsconfig.json",
+    "electron:dev": "concurrently \"next dev\" \"wait-on http://localhost:3000 && electron -r ts-node/register electron/main.ts\"",
+    "electron:build": "next build && pnpm build-electron && concurrently \"next start\" \"wait-on http://localhost:3000 && electron-builder\"",
+    "electron:pack": "next build && pnpm build-electron && concurrently \"next start\" \"wait-on http://localhost:3000 && electron-builder --dir\""
+  },
+  "main": "electron/main.js",
+  "author": {
+    "name": "minhaj",
+    "email": "minhaj@produx.ai"
   },
   "dependencies": {
     "@copilotkit/react-core": "^1.6.0",
@@ -38,11 +47,31 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "concurrently": "^9.1.2",
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.3",
+    "electron-builder": "^24.9.1",
     "eslint": "^9",
     "eslint-config-next": "15.2.0-canary.73",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^7.0.1"
+  },
+  "build": {
+    "appId": "com.mcp.client",
+    "files": [
+      "electron/**/*",
+      "out/**/*",
+      "!**/*.ts"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "mac": {
+      "target": ["dmg", "zip"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "tar.gz"]
+    }
   },
   "packageManager": "pnpm@10.2.1"
 }
