@@ -1,5 +1,5 @@
 {
-  "name": "whiteboard-canvas",
+  "name": "open-mcp-client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -58,6 +58,7 @@
   },
   "build": {
     "appId": "com.mcp.client",
+    "productName": "Open MCP Client",
     "files": [
       "electron/**/*",
       "out/**/*",
@@ -71,7 +72,8 @@
     },
     "linux": {
       "target": ["AppImage", "deb", "tar.gz"]
-    }
+    },
+    "icon": "icon.png"
   },
   "packageManager": "pnpm@10.2.1"
 }
